@@ -2,9 +2,11 @@ package com.epam.booking.services;
 
 import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.exception.NonExistentUserException;
+import com.epam.booking.exception.UserNameTakenException;
 import com.epam.booking.model.Category;
 import com.epam.booking.model.Event;
 import com.epam.booking.model.Ticket;
+import com.epam.booking.model.User;
 import com.epam.booking.model.dto.EventDto;
 import com.epam.booking.model.dto.TicketDto;
 import com.epam.booking.model.dto.UserDto;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -88,7 +91,21 @@ public class BookingService implements BookingFacade {
 
     @Override
     public UserDto createUser(UserDto user) {
-        return null;
+        UserDto  userDto = null;
+        User newUser = new User();
+        newUser.setUserName(user.getUserName());
+        newUser.setEmail(user.getEmail());
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+
+       try{
+          userDto = mapper.map(userService.createUser(newUser) , UserDto.class);
+       }catch(UserNameTakenException userNameTakenException){
+            log.error("Error creating User: User Name Taken -" + newUser.getUserName());
+            throw new UserNameTakenException();
+        }
+
+        return userDto;
     }
 
     @Override
@@ -129,7 +146,10 @@ public class BookingService implements BookingFacade {
 
     @Override
     public List<TicketDto> getBookedTickets(EventDto event, int pageSize, int pageNum) {
-        return null;
+
+        List<Ticket>  ticketList = ticketService.getBookedTicketsByEvent(event ,1 ,1);
+
+        return ticketList.stream().map( item -> mapper.map(item, TicketDto.class)).collect(Collectors.toList());
     }
 
     @Override
