@@ -46,12 +46,17 @@ public class BookingService implements BookingFacade {
 
     @Override
     public List<EventDto> getEventsByTitle(String title, int pageSize, int pageNum) {
-        return null;
+         return eventService.getEventsByTitle(title).stream()
+                .map( item ->  mapper.map(item, EventDto.class))
+                .collect(Collectors.toList()) ;
     }
 
     @Override
+    // TODO  Integration test
     public List<EventDto> getEventsForDay(Date day, int pageSize, int pageNum) {
-        return null;
+        return eventService.getEventsByDate( new java.sql.Date(day.getTime())).stream()
+                .map( item ->  mapper.map(item, EventDto.class))
+                .collect(Collectors.toList()) ;
     }
 
     @Override
@@ -65,12 +70,28 @@ public class BookingService implements BookingFacade {
 
     @Override
     public EventDto updateEvent(EventDto event) {
-        return null;
+        Event eventUpdated;
+        try{
+            eventUpdated = eventService.updateEvent(mapper.map(event, Event.class));
+        }catch(NonExistentEventException nonExistentEventException){
+            log.error("Error updating Event: Non Existent Event:" + event.getTitle());
+            throw new NonExistentEventException();
+        }
+
+        return  mapper.map(eventUpdated, EventDto.class);
     }
 
     @Override
     public boolean deleteEvent(long eventId) {
-        return false;
+
+        try{
+            eventService.deleteEvent(new Event(eventId));
+        }catch(NonExistentEventException nonExistentEventException){
+            log.error("Error updating Event: Non Existent Event");
+            throw new NonExistentEventException();
+        }
+
+        return true;
     }
 
 
@@ -146,10 +167,8 @@ public class BookingService implements BookingFacade {
 
     @Override
     public List<TicketDto> getBookedTickets(EventDto event, int pageSize, int pageNum) {
-
-        List<Ticket>  ticketList = ticketService.getBookedTicketsByEvent(event ,1 ,1);
-
-        return ticketList.stream().map( item -> mapper.map(item, TicketDto.class)).collect(Collectors.toList());
+       return  ticketService.getBookedTicketsByEvent(event ,1 ,1).stream()
+               .map( item -> mapper.map(item, TicketDto.class)).collect(Collectors.toList());
     }
 
     @Override

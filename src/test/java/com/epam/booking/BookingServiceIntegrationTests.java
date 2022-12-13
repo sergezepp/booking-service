@@ -8,6 +8,7 @@ import com.epam.booking.model.dto.EventDto;
 import com.epam.booking.model.dto.TicketDto;
 import com.epam.booking.model.dto.UserDto;
 import com.epam.booking.services.BookingService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +16,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@ActiveProfiles("test")
-@Sql({"/data-integration-testing.sql"})
+@ActiveProfiles("integration-test")
 class BookingServiceIntegrationTests {
 
 	@Autowired
 	BookingService bookingService;
+
 
 	@Test
 	@DisplayName("Get Event By ID")
@@ -98,7 +101,6 @@ class BookingServiceIntegrationTests {
 	@Test
 	void testGetBookedTicketsByEventId(){
 		EventDto event = new EventDto();
-
 		event.setId(1L);
 
 		List<TicketDto> ticketlist = bookingService.getBookedTickets(event,1,1 );
@@ -110,7 +112,6 @@ class BookingServiceIntegrationTests {
 	@Test
 	void testGetBookedTicketsByEventIdEmptyReturnList(){
 		EventDto event = new EventDto();
-
 		event.setId(999L);
 
 		List<TicketDto> ticketlist = bookingService.getBookedTickets(event,1,1 );
@@ -118,4 +119,44 @@ class BookingServiceIntegrationTests {
 		assertEquals(0 , ticketlist.size());
 
 	}
+
+	@Test
+	void testGetEventsByTitle(){
+		List<EventDto> eventslist = bookingService.getEventsByTitle("FORMULA",1,1);
+
+		assertEquals(1 , eventslist.size());
+	}
+
+	@Test
+	void testGetEventsByTitleNoFoundEvents(){
+		List<EventDto> eventslist = bookingService.getEventsByTitle("XXXX",1,1);
+
+		assertEquals(0 , eventslist.size());
+	}
+
+
+	@Test
+	void testUpdateEvent(){
+		EventDto event = new EventDto();
+		event.setId(2L);
+		event.setTitle("SODA STEREO EN VIVO");
+		event.setDate(Date.valueOf("2022-12-12"));
+
+		EventDto eventUpdated = bookingService.updateEvent(event);
+
+		assertEquals("SODA STEREO EN VIVO" , eventUpdated.getTitle());
+		assertEquals(Date.valueOf("2022-12-12") , eventUpdated.getDate());
+	}
+
+	@Test
+	void testUpdateEventNonExistentEventId(){
+		EventDto event = new EventDto();
+		event.setId(999L);
+		event.setTitle("FORMULA 1 MEXICO");
+		event.setDate(Date.valueOf("2022-12-12"));
+
+		assertThrows( NonExistentEventException.class , ()-> bookingService.updateEvent(event) );
+	}
+
+
 }
