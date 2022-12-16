@@ -4,6 +4,8 @@ import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.model.Event;
 import com.epam.booking.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -28,8 +30,8 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public List<Event> getEventsByTitle(String title){
-        return eventRepository.getEventsByTitleContains(title);
+    public List<Event> getEventsByTitle(String title, int pagesize, int pagenum){
+        return eventRepository.getEventsByTitleContains(title , PageRequest.of(pagenum, pagesize));
     }
 
     public List<Event> getEventsByDate(Date date){

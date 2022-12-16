@@ -81,15 +81,28 @@ public interface BookingFacade {
     UserDto getUserByEmail(String email);
 
     /**
-     * Get list of users by matching name. Name is matched using 'contains' approach.
+     * Get list of users by matching user name.
      * In case nothing was found, empty list is returned.
      *
-     * @param name     Users name or it's part.
+     * @param userName     Users name
      * @param pageSize Pagination param. Number of users to return on a page.
      * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
      * @return List of users.
      */
-    List<UserDto> getUsersByName(String name, int pageSize, int pageNum);
+    List<UserDto> getUsersByUserName(String userName, int pageSize, int pageNum);
+
+    /**
+     * Get list of users by given name  First NAme + Last Name
+     * Name is matched using 'contains' approach.
+     * In case nothing was found, empty list is returned.
+     *
+     * @param firstName   Users  first name or it's part.
+     * @param lastName    Users last name or it's part.
+     * @param pageSize Pagination param. Number of users to return on a page.
+     * @param pageNum  Pagination param. Number of the page to return. Starts from 1.
+     * @return List of users.
+     */
+    List<UserDto> getUsersByGivenName(String firstName, String lastName, int pageSize, int pageNum);
 
     /**
      * Creates new user. User id should be auto-generated.

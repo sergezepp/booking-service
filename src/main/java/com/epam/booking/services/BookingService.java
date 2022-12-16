@@ -3,6 +3,7 @@ package com.epam.booking.services;
 import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.exception.NonExistentUserException;
 import com.epam.booking.exception.UserNameTakenException;
+import com.epam.booking.exception.UserNotFoundException;
 import com.epam.booking.model.Category;
 import com.epam.booking.model.Event;
 import com.epam.booking.model.Ticket;
@@ -46,9 +47,9 @@ public class BookingService implements BookingFacade {
 
     @Override
     public List<EventDto> getEventsByTitle(String title, int pageSize, int pageNum) {
-         return eventService.getEventsByTitle(title).stream()
+         return eventService.getEventsByTitle(title, pageSize, pageNum).stream()
                 .map( item ->  mapper.map(item, EventDto.class))
-                .collect(Collectors.toList()) ;
+                 .toList();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class BookingService implements BookingFacade {
     public List<EventDto> getEventsForDay(Date day, int pageSize, int pageNum) {
         return eventService.getEventsByDate( new java.sql.Date(day.getTime())).stream()
                 .map( item ->  mapper.map(item, EventDto.class))
-                .collect(Collectors.toList()) ;
+                .toList();
     }
 
     @Override
@@ -83,7 +84,6 @@ public class BookingService implements BookingFacade {
 
     @Override
     public boolean deleteEvent(long eventId) {
-
         try{
             eventService.deleteEvent(new Event(eventId));
         }catch(NonExistentEventException nonExistentEventException){
@@ -97,16 +97,35 @@ public class BookingService implements BookingFacade {
 
     @Override
     public UserDto getUserById(long userId) {
-        return null;
+         return mapper.map( userService.getUserById(userId).orElseThrow(UserNotFoundException::new)
+                , UserDto.class);
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        return null;
+        return   mapper.map(userService.getUserByEmail(email).orElseThrow(UserNotFoundException::new),
+                UserDto.class);
     }
 
     @Override
-    public List<UserDto> getUsersByName(String name, int pageSize, int pageNum) {
+    public List<UserDto> getUsersByGivenName(String firstName, String lastName, int pageSize, int pageNum) {
+         return userService.getUsersByGivenName(firstName,lastName).stream()
+                 .map( item -> mapper.map(item, UserDto.class))
+                .toList();
+    }
+
+
+    public List<UserDto> getUsersByGivenNameSync(String firstName, String lastName, int pageSize, int pageNum) {
+        return userService.getUsersByGivenNameSync(firstName,lastName).stream()
+                .map( item -> mapper.map(item, UserDto.class))
+                .toList();
+    }
+
+    @Override
+    public List<UserDto> getUsersByUserName(String name, int pageSize, int pageNum) {
+
+
+
         return null;
     }
 
@@ -140,6 +159,9 @@ public class BookingService implements BookingFacade {
     }
 
 
+
+
+
     @Override
     public TicketDto bookTicket(long userId, long eventId, int place, Category category) {
         Ticket ticketOutput = null;
@@ -168,7 +190,8 @@ public class BookingService implements BookingFacade {
     @Override
     public List<TicketDto> getBookedTickets(EventDto event, int pageSize, int pageNum) {
        return  ticketService.getBookedTicketsByEvent(event ,1 ,1).stream()
-               .map( item -> mapper.map(item, TicketDto.class)).collect(Collectors.toList());
+               .map( item -> mapper.map(item, TicketDto.class))
+               .toList();
     }
 
     @Override

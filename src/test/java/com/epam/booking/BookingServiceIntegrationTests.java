@@ -8,6 +8,7 @@ import com.epam.booking.model.dto.EventDto;
 import com.epam.booking.model.dto.TicketDto;
 import com.epam.booking.model.dto.UserDto;
 import com.epam.booking.services.BookingService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.util.StopWatch;
 
 import java.sql.Date;
 import java.util.List;
@@ -25,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("integration-test")
+@Slf4j
 class BookingServiceIntegrationTests {
 
 	@Autowired
@@ -58,7 +61,6 @@ class BookingServiceIntegrationTests {
 		TicketDto ticket = bookingService.bookTicket(1,1,35, Category.STANDARD);
 		assertNotNull(ticket);
 		assertEquals(35 , ticket.getPlace());
-
 	}
 
 	@Test
@@ -106,7 +108,6 @@ class BookingServiceIntegrationTests {
 		List<TicketDto> ticketlist = bookingService.getBookedTickets(event,1,1 );
 
 		assertEquals(1 , ticketlist.size());
-
 	}
 
 	@Test
@@ -117,12 +118,11 @@ class BookingServiceIntegrationTests {
 		List<TicketDto> ticketlist = bookingService.getBookedTickets(event,1,1 );
 
 		assertEquals(0 , ticketlist.size());
-
 	}
 
 	@Test
 	void testGetEventsByTitle(){
-		List<EventDto> eventslist = bookingService.getEventsByTitle("FORMULA",1,1);
+		List<EventDto> eventslist = bookingService.getEventsByTitle("FORMULA",1,0);
 
 		assertEquals(1 , eventslist.size());
 	}
@@ -157,6 +157,42 @@ class BookingServiceIntegrationTests {
 
 		assertThrows( NonExistentEventException.class , ()-> bookingService.updateEvent(event) );
 	}
+
+	@Test
+	void testGetUserByGivenName(){
+		UserDto user = new UserDto();
+		user.setUserName("test_user_A");
+		user.setFirstName("Gerardo");
+		user.setLastName("Cepeda");
+		user.setEmail("test@test.com");
+		bookingService.createUser(user);
+
+		UserDto user2 = new UserDto();
+		user2.setUserName("test_user_2");
+		user2.setFirstName("Izza");
+		user2.setLastName("Garza");
+		user2.setEmail("test@test.com");
+
+		 bookingService.createUser(user2);
+
+		StopWatch watch = new StopWatch();
+		watch.start();
+		List<UserDto> userList = bookingService.getUsersByGivenName("" , "Cepeda",1,1);
+        watch.stop();
+		log.info("Threads: " + watch.getTotalTimeMillis());
+
+
+		StopWatch watch2 = new StopWatch();
+		watch2.start();
+		List<UserDto> userList2 = bookingService.getUsersByGivenNameSync("" , "Cepeda",1,1);
+		watch2.stop();
+		log.info("SYNC: " + watch2.getTotalTimeMillis());
+
+		assertEquals(2 , userList.size());
+
+	}
+
+
 
 
 }
