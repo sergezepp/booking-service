@@ -2,6 +2,7 @@ package com.epam.booking.services;
 
 import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.exception.NonExistentUserException;
+import com.epam.booking.exception.UserNotFoundException;
 import com.epam.booking.model.Category;
 import com.epam.booking.model.Event;
 import com.epam.booking.model.Ticket;
@@ -12,9 +13,11 @@ import com.epam.booking.repository.EventRepository;
 import com.epam.booking.repository.TicketRepository;
 import com.epam.booking.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class TicketService {
@@ -43,9 +46,19 @@ public class TicketService {
     }
 
     public List<Ticket> getBookedTicketsByEvent(EventDto eventDto, int pageSize, int pageNum){
-       return ticketRepository.getTicketsByEventId(eventDto.getId());
+       return ticketRepository.getTicketsByEventId(eventDto.getId() , PageRequest.of(pageNum ,pageSize ));
     }
 
+    public List<Ticket> getBookedTicketsByUser(Long userId, int pageSize, int pageNum){
+        return ticketRepository.getTicketsByUser(userId, PageRequest.of(pageNum ,pageSize ));
+    }
 
+    public void deleteTicket(Long ticketId){
+        if (ticketRepository.findById(ticketId).isPresent()){
+            ticketRepository.deleteById(ticketId);
+        }else{
+            throw new NoSuchElementException();
+        }
+    }
 
 }

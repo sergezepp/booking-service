@@ -3,6 +3,7 @@ package com.epam.booking;
 import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.exception.NonExistentUserException;
 import com.epam.booking.exception.UserNameTakenException;
+import com.epam.booking.exception.UserNotFoundException;
 import com.epam.booking.model.Category;
 import com.epam.booking.model.dto.EventDto;
 import com.epam.booking.model.dto.TicketDto;
@@ -105,7 +106,7 @@ class BookingServiceIntegrationTests {
 		EventDto event = new EventDto();
 		event.setId(1L);
 
-		List<TicketDto> ticketlist = bookingService.getBookedTickets(event,1,1 );
+		List<TicketDto> ticketlist = bookingService.getBookedTickets(event,1,0 );
 
 		assertEquals(1 , ticketlist.size());
 	}
@@ -188,11 +189,122 @@ class BookingServiceIntegrationTests {
 		watch2.stop();
 		log.info("SYNC: " + watch2.getTotalTimeMillis());
 
+
 		assertEquals(2 , userList.size());
 
 	}
 
 
+	@Test
+	void testGetEventsForDay(){
+		List<EventDto> list = bookingService.getEventsForDay(java.sql.Date.valueOf("2022-10-10") , 1 ,0);
+		assertEquals(1 , list.size());
+	}
+
+
+
+	@Test
+	void testDeleteEvent(){
+		EventDto event = new EventDto();
+		event.setTitle("FORMULA 1 MEXICO");
+		event.setDate(Date.valueOf("2022-12-12"));
+		EventDto eventOutput = bookingService.createEvent(event);
+
+		Long eventId = eventOutput.getId();
+		bookingService.deleteEvent(eventId);
+
+		assertThrows( NoSuchElementException.class , ()-> bookingService.getEventById(eventId));
+
+	}
+
+	@Test
+	void testGetUserByUserName() {
+		UserDto user = new UserDto();
+		user.setUserName("testUser01");
+		user.setFirstName("Gerardo");
+		user.setLastName("Cepeda");
+		user.setEmail("test@test.com");
+		bookingService.createUser(user);
+
+		UserDto userSaved = bookingService.getUsersByUserName(user.getUserName());
+
+		assertNotNull(userSaved);
+		assertEquals("testUser01" ,userSaved.getUserName());
+
+	}
+
+
+	@Test
+	void testGetUserByEmail() {
+		UserDto user = new UserDto();
+		user.setUserName("testUser02");
+		user.setFirstName("Gerardo");
+		user.setLastName("Cepeda");
+		user.setEmail("test@test.com");
+		bookingService.createUser(user);
+
+		UserDto userSaved = bookingService.getUserByEmail(user.getEmail());
+
+		assertNotNull(userSaved);
+		assertEquals("test@test.com" ,userSaved.getEmail());
+
+	}
+
+	@Test
+	void testGetUserById() {
+		UserDto user = new UserDto();
+		user.setUserName("testUser03");
+		user.setFirstName("Gerardo");
+		user.setLastName("Cepeda");
+		user.setEmail("test@test.com");
+		UserDto userSaved = bookingService.createUser(user);
+
+		assertNotNull(userSaved);
+
+		UserDto userObtained = bookingService.getUserById(userSaved.getId());
+
+		assertNotNull(userObtained);
+		assertEquals(userSaved.getId() ,userObtained.getId());
+
+	}
+
+	@Test
+	void testUpdateUser() {
+		UserDto user = new UserDto();
+		user.setUserName("testUser04");
+		user.setFirstName("Gerardo");
+		user.setLastName("Cepeda");
+		user.setEmail("test@test.com");
+		UserDto userSaved = bookingService.createUser(user);
+
+		assertNotNull(userSaved);
+
+		userSaved.setEmail("new_email@gmail.com");
+
+		UserDto userObtained = bookingService.updateUser(userSaved);
+
+		assertNotNull(userObtained);
+		assertEquals(userSaved.getEmail() ,userObtained.getEmail());
+
+	}
+
+	@Test
+	void testDeleteUser() {
+		UserDto user = new UserDto();
+		user.setUserName("testUser05");
+		user.setFirstName("Gerardo");
+		user.setLastName("Cepeda");
+		user.setEmail("test@test.com");
+		UserDto userSaved = bookingService.createUser(user);
+
+		assertNotNull(userSaved);
+
+		bookingService.deleteUser(userSaved.getId());
+
+
+		assertThrows( UserNotFoundException.class , ()-> bookingService.getUserById(userSaved.getId()));
+
+	}
 
 
 }

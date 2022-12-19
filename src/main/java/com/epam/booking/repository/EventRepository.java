@@ -13,6 +13,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> getEventsByTitleContains(String title , Pageable page);
 
-    List<Event> getEventsByDate(Date date);
+    List<Event> getEventsByDate(Date date, Pageable page);
 
 }

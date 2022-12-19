@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -53,9 +54,8 @@ public class BookingService implements BookingFacade {
     }
 
     @Override
-    // TODO  Integration test
     public List<EventDto> getEventsForDay(Date day, int pageSize, int pageNum) {
-        return eventService.getEventsByDate( new java.sql.Date(day.getTime())).stream()
+        return eventService.getEventsByDate( new java.sql.Date(day.getTime()), pageSize , pageNum ) .stream()
                 .map( item ->  mapper.map(item, EventDto.class))
                 .toList();
     }
@@ -122,11 +122,9 @@ public class BookingService implements BookingFacade {
     }
 
     @Override
-    public List<UserDto> getUsersByUserName(String name, int pageSize, int pageNum) {
-
-
-
-        return null;
+    public UserDto getUsersByUserName(String userName) {
+        User user = userService.getUserByUserName(userName).orElseThrow(UserNotFoundException::new);
+        return mapper.map(user , UserDto.class);
     }
 
     @Override
@@ -150,17 +148,29 @@ public class BookingService implements BookingFacade {
 
     @Override
     public UserDto updateUser(UserDto user) {
-        return null;
+        User  newUser = mapper.map(user,  User.class);
+        UserDto userDto = null;
+
+        try{
+            userDto = mapper.map(userService.updateUser(newUser) , UserDto.class);
+        }catch(UserNotFoundException userNotFoundException){
+            log.error("Error creating User: User Not Found -" + newUser.getUserName());
+            throw new UserNotFoundException();
+        }
+
+        return userDto;
     }
 
     @Override
     public boolean deleteUser(long userId) {
-        return false;
+        try{
+           userService.deleteUser(userId);
+        }catch(UserNotFoundException userNotFoundException){
+            log.error("Error creating User: User Not Found -" + userId);
+            throw new UserNotFoundException();
+        }
+        return true;
     }
-
-
-
-
 
     @Override
     public TicketDto bookTicket(long userId, long eventId, int place, Category category) {
@@ -180,22 +190,29 @@ public class BookingService implements BookingFacade {
     }
 
     @Override
+    // TODO  Integration test
     public List<TicketDto> getBookedTickets(UserDto user, int pageSize, int pageNum) {
-
-
-
-        return null;
+        return  ticketService.getBookedTicketsByUser(user.getId() ,pageSize ,pageNum).stream()
+                .map( item -> mapper.map(item, TicketDto.class))
+                .toList();
     }
 
     @Override
     public List<TicketDto> getBookedTickets(EventDto event, int pageSize, int pageNum) {
-       return  ticketService.getBookedTicketsByEvent(event ,1 ,1).stream()
+       return  ticketService.getBookedTicketsByEvent(event ,pageSize ,pageNum).stream()
                .map( item -> mapper.map(item, TicketDto.class))
                .toList();
     }
 
     @Override
+    // TODO  Integration test
     public boolean cancelTicket(long ticketId) {
-        return false;
+        try{
+            ticketService.deleteTicket(ticketId);
+        }catch(NoSuchElementException noSuchElementException){
+            log.error("Error Cancel Ticket,  Ticket Not Found" + ticketId);
+            throw new NoSuchElementException();
+        }
+        return true;
     }
 }
