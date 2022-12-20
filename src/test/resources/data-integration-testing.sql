@@ -6,7 +6,9 @@ Values ('FORMULA 1', '2022-10-10'),
        ('SODA STEREO CONCERT', '2022-10-10');
 
 INSERT INTO TICKET ( USER_ID,  CATEGORY, PLACE, EVENT_ID)
-VALUES ( '1' , 'STANDARD' , '23' , '1' );
+VALUES ( '1' , 'STANDARD' , '23' , '1' ),
+       ( '1' , 'STANDARD' , '55' , '2' ),
+       ( '1' , 'STANDARD' , '58' , '2' );
 
 
 

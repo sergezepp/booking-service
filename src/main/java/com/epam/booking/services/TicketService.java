@@ -31,7 +31,7 @@ public class TicketService {
     @Autowired
     UserRepository userRepository;
 
-    public Ticket createTicket(long userId, long eventId, int place, Category category){
+    public Ticket createTicket(long userId, long eventId, int place, Category category) {
 
         userRepository.findById(userId).orElseThrow(NonExistentUserException::new);
         eventRepository.findById(eventId).orElseThrow(NonExistentEventException::new);
@@ -45,18 +45,18 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public List<Ticket> getBookedTicketsByEvent(EventDto eventDto, int pageSize, int pageNum){
-       return ticketRepository.getTicketsByEventId(eventDto.getId() , PageRequest.of(pageNum ,pageSize ));
+    public List<Ticket> getBookedTicketsByEvent(EventDto eventDto, int pageSize, int pageNum) {
+        return ticketRepository.getTicketsByEventId(eventDto.getId(), PageRequest.of(pageNum, pageSize));
     }
 
-    public List<Ticket> getBookedTicketsByUser(Long userId, int pageSize, int pageNum){
-        return ticketRepository.getTicketsByUser(userId, PageRequest.of(pageNum ,pageSize ));
+    public List<Ticket> getBookedTicketsByUser(Long userId, int pageSize, int pageNum) {
+        return ticketRepository.getTicketsByUserId(userId, PageRequest.of(pageNum, pageSize));
     }
 
-    public void deleteTicket(Long ticketId){
-        if (ticketRepository.findById(ticketId).isPresent()){
+    public void deleteTicket(Long ticketId) {
+        if (ticketRepository.findById(ticketId).isPresent()) {
             ticketRepository.deleteById(ticketId);
-        }else{
+        } else {
             throw new NoSuchElementException();
         }
     }

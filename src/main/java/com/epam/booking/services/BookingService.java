@@ -48,15 +48,15 @@ public class BookingService implements BookingFacade {
 
     @Override
     public List<EventDto> getEventsByTitle(String title, int pageSize, int pageNum) {
-         return eventService.getEventsByTitle(title, pageSize, pageNum).stream()
-                .map( item ->  mapper.map(item, EventDto.class))
-                 .toList();
+        return eventService.getEventsByTitle(title, pageSize, pageNum).stream()
+                .map(item -> mapper.map(item, EventDto.class))
+                .toList();
     }
 
     @Override
     public List<EventDto> getEventsForDay(Date day, int pageSize, int pageNum) {
-        return eventService.getEventsByDate( new java.sql.Date(day.getTime()), pageSize , pageNum ) .stream()
-                .map( item ->  mapper.map(item, EventDto.class))
+        return eventService.getEventsByDate(new java.sql.Date(day.getTime()), pageSize, pageNum).stream()
+                .map(item -> mapper.map(item, EventDto.class))
                 .toList();
     }
 
@@ -64,29 +64,29 @@ public class BookingService implements BookingFacade {
     public EventDto createEvent(EventDto event) {
         Event newEvent = new Event();
         newEvent.setTitle(event.getTitle());
-        newEvent.setDate( new java.sql.Date( event.getDate().getTime()));
+        newEvent.setDate(new java.sql.Date(event.getDate().getTime()));
 
-        return  mapper.map(eventService.createEvent(newEvent), EventDto.class);
+        return mapper.map(eventService.createEvent(newEvent), EventDto.class);
     }
 
     @Override
     public EventDto updateEvent(EventDto event) {
         Event eventUpdated;
-        try{
+        try {
             eventUpdated = eventService.updateEvent(mapper.map(event, Event.class));
-        }catch(NonExistentEventException nonExistentEventException){
+        } catch (NonExistentEventException nonExistentEventException) {
             log.error("Error updating Event: Non Existent Event:" + event.getTitle());
             throw new NonExistentEventException();
         }
 
-        return  mapper.map(eventUpdated, EventDto.class);
+        return mapper.map(eventUpdated, EventDto.class);
     }
 
     @Override
     public boolean deleteEvent(long eventId) {
-        try{
+        try {
             eventService.deleteEvent(new Event(eventId));
-        }catch(NonExistentEventException nonExistentEventException){
+        } catch (NonExistentEventException nonExistentEventException) {
             log.error("Error updating Event: Non Existent Event");
             throw new NonExistentEventException();
         }
@@ -97,48 +97,48 @@ public class BookingService implements BookingFacade {
 
     @Override
     public UserDto getUserById(long userId) {
-         return mapper.map( userService.getUserById(userId).orElseThrow(UserNotFoundException::new)
+        return mapper.map(userService.getUserById(userId).orElseThrow(UserNotFoundException::new)
                 , UserDto.class);
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        return   mapper.map(userService.getUserByEmail(email).orElseThrow(UserNotFoundException::new),
+        return mapper.map(userService.getUserByEmail(email).orElseThrow(UserNotFoundException::new),
                 UserDto.class);
     }
 
     @Override
     public List<UserDto> getUsersByGivenName(String firstName, String lastName, int pageSize, int pageNum) {
-         return userService.getUsersByGivenName(firstName,lastName).stream()
-                 .map( item -> mapper.map(item, UserDto.class))
+        return userService.getUsersByGivenName(firstName, lastName).stream()
+                .map(item -> mapper.map(item, UserDto.class))
                 .toList();
     }
 
 
     public List<UserDto> getUsersByGivenNameSync(String firstName, String lastName, int pageSize, int pageNum) {
-        return userService.getUsersByGivenNameSync(firstName,lastName).stream()
-                .map( item -> mapper.map(item, UserDto.class))
+        return userService.getUsersByGivenNameSync(firstName, lastName).stream()
+                .map(item -> mapper.map(item, UserDto.class))
                 .toList();
     }
 
     @Override
-    public UserDto getUsersByUserName(String userName) {
+    public UserDto getUserByUserName(String userName) {
         User user = userService.getUserByUserName(userName).orElseThrow(UserNotFoundException::new);
-        return mapper.map(user , UserDto.class);
+        return mapper.map(user, UserDto.class);
     }
 
     @Override
     public UserDto createUser(UserDto user) {
-        UserDto  userDto = null;
+        UserDto userDto = null;
         User newUser = new User();
         newUser.setUserName(user.getUserName());
         newUser.setEmail(user.getEmail());
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
 
-       try{
-          userDto = mapper.map(userService.createUser(newUser) , UserDto.class);
-       }catch(UserNameTakenException userNameTakenException){
+        try {
+            userDto = mapper.map(userService.createUser(newUser), UserDto.class);
+        } catch (UserNameTakenException userNameTakenException) {
             log.error("Error creating User: User Name Taken -" + newUser.getUserName());
             throw new UserNameTakenException();
         }
@@ -148,12 +148,12 @@ public class BookingService implements BookingFacade {
 
     @Override
     public UserDto updateUser(UserDto user) {
-        User  newUser = mapper.map(user,  User.class);
+        User newUser = mapper.map(user, User.class);
         UserDto userDto = null;
 
-        try{
-            userDto = mapper.map(userService.updateUser(newUser) , UserDto.class);
-        }catch(UserNotFoundException userNotFoundException){
+        try {
+            userDto = mapper.map(userService.updateUser(newUser), UserDto.class);
+        } catch (UserNotFoundException userNotFoundException) {
             log.error("Error creating User: User Not Found -" + newUser.getUserName());
             throw new UserNotFoundException();
         }
@@ -163,9 +163,9 @@ public class BookingService implements BookingFacade {
 
     @Override
     public boolean deleteUser(long userId) {
-        try{
-           userService.deleteUser(userId);
-        }catch(UserNotFoundException userNotFoundException){
+        try {
+            userService.deleteUser(userId);
+        } catch (UserNotFoundException userNotFoundException) {
             log.error("Error creating User: User Not Found -" + userId);
             throw new UserNotFoundException();
         }
@@ -178,38 +178,36 @@ public class BookingService implements BookingFacade {
 
         try {
             ticketOutput = ticketService.createTicket(userId, eventId, place, category);
-        }catch(NonExistentEventException nonExistentEventException){
-             log.error("Error creating Ticket: Non Existent Event:" + eventId);
-             throw new NonExistentEventException();
-        }catch (NonExistentUserException nonExistentUserException){
+        } catch (NonExistentEventException nonExistentEventException) {
+            log.error("Error creating Ticket: Non Existent Event:" + eventId);
+            throw new NonExistentEventException();
+        } catch (NonExistentUserException nonExistentUserException) {
             log.error("Error creating Ticket: Non Existent User:" + userId);
             throw new NonExistentUserException();
         }
 
-        return mapper.map(ticketOutput , TicketDto.class);
+        return mapper.map(ticketOutput, TicketDto.class);
     }
 
     @Override
-    // TODO  Integration test
     public List<TicketDto> getBookedTickets(UserDto user, int pageSize, int pageNum) {
-        return  ticketService.getBookedTicketsByUser(user.getId() ,pageSize ,pageNum).stream()
-                .map( item -> mapper.map(item, TicketDto.class))
+        return ticketService.getBookedTicketsByUser(user.getId(), pageSize, pageNum).stream()
+                .map(item -> mapper.map(item, TicketDto.class))
                 .toList();
     }
 
     @Override
     public List<TicketDto> getBookedTickets(EventDto event, int pageSize, int pageNum) {
-       return  ticketService.getBookedTicketsByEvent(event ,pageSize ,pageNum).stream()
-               .map( item -> mapper.map(item, TicketDto.class))
-               .toList();
+        return ticketService.getBookedTicketsByEvent(event, pageSize, pageNum).stream()
+                .map(item -> mapper.map(item, TicketDto.class))
+                .toList();
     }
 
     @Override
-    // TODO  Integration test
     public boolean cancelTicket(long ticketId) {
-        try{
+        try {
             ticketService.deleteTicket(ticketId);
-        }catch(NoSuchElementException noSuchElementException){
+        } catch (NoSuchElementException noSuchElementException) {
             log.error("Error Cancel Ticket,  Ticket Not Found" + ticketId);
             throw new NoSuchElementException();
         }

@@ -34,6 +34,7 @@ public class EventService {
         return eventRepository.getEventsByTitleContains(title , PageRequest.of(pagenum, pagesize));
     }
 
+
     public List<Event> getEventsByDate(Date date, int pagesize, int pagenum){
         return eventRepository.getEventsByDate(date, PageRequest.of(pagenum, pagesize));
     }

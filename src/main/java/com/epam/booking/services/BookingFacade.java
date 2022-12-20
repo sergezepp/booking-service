@@ -6,7 +6,6 @@ import com.epam.booking.model.dto.*;
 import java.util.Date;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Groups together all operations related to tickets booking.
@@ -88,7 +87,7 @@ public interface BookingFacade {
      * @param userName     Users name
      * @return  user
      */
-     UserDto getUsersByUserName(String userName);
+     UserDto getUserByUserName(String userName);
 
     /**
      * Get list of users by given name  First NAme + Last Name

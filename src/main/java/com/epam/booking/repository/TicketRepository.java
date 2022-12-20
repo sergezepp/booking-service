@@ -12,5 +12,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     List<Ticket> getTicketsByEventId(Long eventId, Pageable page);
 
-    List<Ticket> getTicketsByUser(Long userId , Pageable page);
+    List<Ticket> getTicketsByUserId(Long userId , Pageable page);
 }
