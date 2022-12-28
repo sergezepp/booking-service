@@ -183,14 +183,14 @@ class BookingServiceIntegrationTests {
 
         StopWatch watch = new StopWatch();
         watch.start();
-        List<UserDto> userList = bookingService.getUsersByGivenName("", "Cerati", 1, 1);
+        List<UserDto> userList = bookingService.getUsersByGivenName("", "Cerati", 1, 0);
         watch.stop();
         log.info("Threads: " + watch.getTotalTimeMillis());
 
 
         StopWatch watch2 = new StopWatch();
         watch2.start();
-        List<UserDto> userList2 = bookingService.getUsersByGivenNameSync("", "Cerati", 1, 1);
+        List<UserDto> userList2 = bookingService.getUsersByGivenNameSync("", "Cerati", 1, 0);
         watch2.stop();
         log.info("SYNC: " + watch2.getTotalTimeMillis());
 
