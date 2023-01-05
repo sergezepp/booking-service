@@ -1,4 +1,4 @@
-package com.epam.booking.services;
+package com.epam.booking.service;
 
 import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.exception.NonExistentUserException;
@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -56,6 +54,13 @@ public class BookingService implements BookingFacade {
     @Override
     public List<EventDto> getEventsForDay(Date day, int pageSize, int pageNum) {
         return eventService.getEventsByDate(new java.sql.Date(day.getTime()), pageSize, pageNum).stream()
+                .map(item -> mapper.map(item, EventDto.class))
+                .toList();
+    }
+
+
+    public List<EventDto> getAllEvents() {
+        return eventService.getAllEvents().stream()
                 .map(item -> mapper.map(item, EventDto.class))
                 .toList();
     }

@@ -1,4 +1,4 @@
-package com.epam.booking;
+package com.epam.booking.service;
 
 import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.exception.NonExistentUserException;
@@ -8,7 +8,7 @@ import com.epam.booking.model.Category;
 import com.epam.booking.model.dto.EventDto;
 import com.epam.booking.model.dto.TicketDto;
 import com.epam.booking.model.dto.UserDto;
-import com.epam.booking.services.BookingService;
+import com.epam.booking.service.BookingService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

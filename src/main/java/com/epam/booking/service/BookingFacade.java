@@ -1,4 +1,4 @@
-package com.epam.booking.services;
+package com.epam.booking.service;
 
 import com.epam.booking.model.Category;
 import com.epam.booking.model.dto.*;
@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * Groups together all operations related to tickets booking.
- * Created by maksym_govorischev.
  */
 public interface BookingFacade {
 

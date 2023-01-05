@@ -1,4 +1,4 @@
-package com.epam.booking.services;
+package com.epam.booking.service;
 
 import com.epam.booking.exception.UserNameTakenException;
 import com.epam.booking.exception.UserNotFoundException;
@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 @Service
 public class UserService {

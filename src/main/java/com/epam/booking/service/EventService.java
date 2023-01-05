@@ -1,4 +1,4 @@
-package com.epam.booking.services;
+package com.epam.booking.service;
 
 import com.epam.booking.exception.NonExistentEventException;
 import com.epam.booking.model.Event;
