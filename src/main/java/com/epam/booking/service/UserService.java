@@ -19,7 +19,7 @@ public class UserService {
 
 
     public User createUser(User user) {
-        if (userRepository.findByUserName(user.getUserName()).isPresent()) {
+        if (userRepository.findByUserIdentifier(user.getUserIdentifier()).isPresent()) {
             throw new UserNameTakenException();
         }
         return userRepository.save(user);
@@ -58,8 +58,8 @@ public class UserService {
         return userList;
     }
 
-    public Optional<User> getUserByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public Optional<User> getUserByUserIdentifier(String userName) {
+        return userRepository.findByUserIdentifier(userName);
     }
 
     public User updateUser(User user) {

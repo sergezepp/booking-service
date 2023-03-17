@@ -24,8 +24,8 @@ public class User  {
     @Column(name = "EMAIL")
     private String email;
 
-    @Column(name = "USER_NAME", unique=true)
-    private String userName;
+    @Column(name = "USER_IDENTIFIER", unique=true)
+    private String userIdentifier;
 
     public User(Long id){
         this.id = id ;

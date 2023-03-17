@@ -34,7 +34,8 @@ public class BookingService implements BookingFacade {
     @Autowired
     UserService userService;
 
-    private static final ModelMapper mapper = new ModelMapper();
+    @Autowired
+    ModelMapper mapper;
 
 
     @Override
@@ -128,7 +129,7 @@ public class BookingService implements BookingFacade {
 
     @Override
     public UserDto getUserByUserName(String userName) {
-        User user = userService.getUserByUserName(userName).orElseThrow(UserNotFoundException::new);
+        User user = userService.getUserByUserIdentifier(userName).orElseThrow(UserNotFoundException::new);
         return mapper.map(user, UserDto.class);
     }
 
@@ -136,7 +137,7 @@ public class BookingService implements BookingFacade {
     public UserDto createUser(UserDto user) {
         UserDto userDto = null;
         User newUser = new User();
-        newUser.setUserName(user.getUserName());
+        newUser.setUserIdentifier(user.getUserIdentifier());
         newUser.setEmail(user.getEmail());
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
@@ -144,7 +145,7 @@ public class BookingService implements BookingFacade {
         try {
             userDto = mapper.map(userService.createUser(newUser), UserDto.class);
         } catch (UserNameTakenException userNameTakenException) {
-            log.error("Error creating User: User Name Taken -" + newUser.getUserName());
+            log.error("Error creating User: User Name Taken -" + newUser.getUserIdentifier());
             throw new UserNameTakenException();
         }
 
@@ -159,7 +160,7 @@ public class BookingService implements BookingFacade {
         try {
             userDto = mapper.map(userService.updateUser(newUser), UserDto.class);
         } catch (UserNotFoundException userNotFoundException) {
-            log.error("Error creating User: User Not Found -" + newUser.getUserName());
+            log.error("Error creating User: User Not Found -" + newUser.getUserIdentifier());
             throw new UserNotFoundException();
         }
 
@@ -194,8 +195,19 @@ public class BookingService implements BookingFacade {
         return mapper.map(ticketOutput, TicketDto.class);
     }
 
+    public void loadBookedTickets(List<TicketDto> ticketList){
+        ticketService.loadBookedTickets(ticketList);
+    }
+
     @Override
     public List<TicketDto> getBookedTickets(UserDto user, int pageSize, int pageNum) {
+        return ticketService.getBookedTicketsByUser(user.getId(), pageSize, pageNum).stream()
+                .map(item -> mapper.map(item, TicketDto.class))
+                .toList();
+    }
+
+    public List<TicketDto> getBookedTicketsByUserIdentifier(String userIdentifier, int pageSize, int pageNum) {
+        User user =  userService.getUserByUserIdentifier(userIdentifier).orElseThrow(NonExistentUserException::new);
         return ticketService.getBookedTicketsByUser(user.getId(), pageSize, pageNum).stream()
                 .map(item -> mapper.map(item, TicketDto.class))
                 .toList();

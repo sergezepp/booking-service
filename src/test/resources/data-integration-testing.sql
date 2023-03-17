@@ -1,4 +1,4 @@
-INSERT INTO USER (EMAIL, FIRST_NAME, LAST_NAME, USER_NAME)
+INSERT INTO USER (EMAIL, FIRST_NAME, LAST_NAME, USER_IDENTIFIER)
 Values   ('s.cepeda.ortegon@gmail.com', 'Sergio', 'Cepeda', 'sergio.cepeda');
 
 INSERT INTO EVENT (TITLE, DATE)

@@ -7,12 +7,14 @@ import com.epam.booking.model.Event;
 import com.epam.booking.model.Ticket;
 import com.epam.booking.model.User;
 import com.epam.booking.model.dto.EventDto;
+import com.epam.booking.model.dto.TicketDto;
 import com.epam.booking.repository.EventRepository;
 import com.epam.booking.repository.TicketRepository;
 import com.epam.booking.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,14 +33,14 @@ public class TicketService {
 
     public Ticket createTicket(long userId, long eventId, int place, Category category) {
 
-        userRepository.findById(userId).orElseThrow(NonExistentUserException::new);
-        eventRepository.findById(eventId).orElseThrow(NonExistentEventException::new);
+        User user = userRepository.findById(userId).orElseThrow(NonExistentUserException::new);
+        Event event = eventRepository.findById(eventId).orElseThrow(NonExistentEventException::new);
 
         Ticket ticket = new Ticket();
         ticket.setCategory(category);
         ticket.setPlace(place);
-        ticket.setUser(new User(userId));
-        ticket.setEvent(new Event(eventId));
+        ticket.setUser(user);
+        ticket.setEvent(event);
 
         return ticketRepository.save(ticket);
     }
@@ -59,4 +61,10 @@ public class TicketService {
         }
     }
 
+    @Transactional
+    public void loadBookedTickets(List<TicketDto> ticketList){
+        ticketList.forEach( item -> createTicket(item.getUserId(), item.getEventId(), item.getPlace(), item.getCategory()));
+    }
+
 }
+

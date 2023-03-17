@@ -166,4 +166,12 @@ public interface BookingFacade {
      */
     boolean cancelTicket(long ticketId);
 
+    Object getAllEvents();
+
+    List<TicketDto> getBookedTicketsByUserIdentifier(String userIdentifier, int i, int i1);
+
+    void loadBookedTickets(List<TicketDto> ticketsList);
+
+    List<UserDto> getUsersByGivenNameSync(String s, String cerati, int i, int i1);
+
 }

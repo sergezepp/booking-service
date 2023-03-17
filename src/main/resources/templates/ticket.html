@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+  <meta charset="UTF-8" />
+  <title>Tickets</title>
+</head>
+<body>
+
+<table class="table table-striped table-responsive-md">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Category</th>
+    <th>Seat</th>
+    <th>Event Title</th>
+    <th>Date</th>
+    <th>User</th>
+  </tr>
+  </thead>
+  <tr th:each="ticket: ${tickets}">
+    <td th:text="${ticket.id}" />
+    <td th:text="${ticket.category}" />
+    <td th:text="${ticket.place}" />
+    <td th:text="${ticket.eventTitle}" />
+    <td th:text="${ticket.date}" />
+    <td th:text="${ticket.userIdentifier}" />
+  </tr>
+</table>
+</body>
+</html>

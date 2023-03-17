@@ -23,11 +23,11 @@ public class Ticket  {
     @Column(name = "PLACE")
     private Integer place;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "EVENT_ID", nullable=false)
     private Event event;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable=false)
     private User user;
 

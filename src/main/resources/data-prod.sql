@@ -1,4 +1,4 @@
-INSERT INTO USER (EMAIL, FIRST_NAME, LAST_NAME, USER_NAME)
+INSERT INTO USER (EMAIL, FIRST_NAME, LAST_NAME, USER_IDENTIFIER)
 Values   ('s.cepeda.ortegon@gmail.com', 'Sergio', 'Cepeda', 'sergio.cepeda'),
          ('alonson@gmail.com', 'Alonso', 'Ortegon', 'alonso00'),
          ('gerardo@gmail.com', 'Gerardo', 'Cepeda', 'gerardo99'),
@@ -11,6 +11,8 @@ Values ('FORMULA 1', '2022-10-10'),
 
 INSERT INTO TICKET ( USER_ID,  CATEGORY, PLACE, EVENT_ID)
 VALUES ( '1' , 'STANDARD' , '23' , '1' ),
+       ( '1' , 'STANDARD' , '999' , '1' ),
+       ( '1' , 'STANDARD' , '14789' , '1' ),
        ( '3' , 'STANDARD' , '26' , '1' ),
        ( '4' , 'STANDARD' , '200' , '1' );
 

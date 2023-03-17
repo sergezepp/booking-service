@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class BookingServiceIntegrationTests {
 
     @Autowired
-    BookingService bookingService;
+    BookingFacade bookingService;
 
 
     @Test
@@ -77,13 +77,13 @@ class BookingServiceIntegrationTests {
     @DisplayName("Create User")
     void testCreateUser() {
         UserDto user = new UserDto();
-        user.setUserName("test_user");
+        user.setUserIdentifier("test_user");
         user.setFirstName("testy");
         user.setLastName("testk");
         user.setEmail("test@test.com");
 
         UserDto userCreated = bookingService.createUser(user);
-        assertEquals("test_user", userCreated.getUserName());
+        assertEquals("test_user", userCreated.getUserIdentifier());
     }
 
 
@@ -91,7 +91,7 @@ class BookingServiceIntegrationTests {
     @DisplayName("Create User - User Name Taken")
     void testCreateUserUserNAmeTaken() {
         UserDto user = new UserDto();
-        user.setUserName("sergio.cepeda");
+        user.setUserIdentifier("sergio.cepeda");
         user.setFirstName("test");
         user.setLastName("test");
         user.setEmail("test@test.com");
@@ -167,14 +167,14 @@ class BookingServiceIntegrationTests {
     @Test
     void testGetUserByGivenName() {
         UserDto user = new UserDto();
-        user.setUserName("test_user_A");
+        user.setUserIdentifier("test_user_A");
         user.setFirstName("Gerardo");
         user.setLastName("Cerati");
         user.setEmail("test@test.com");
         bookingService.createUser(user);
 
         UserDto user2 = new UserDto();
-        user2.setUserName("test_user_2");
+        user2.setUserIdentifier("test_user_2");
         user2.setFirstName("Izza");
         user2.setLastName("Cerati");
         user2.setEmail("test@test.com");
@@ -229,16 +229,16 @@ class BookingServiceIntegrationTests {
     @Test
     void testGetUserByUserName() {
         UserDto user = new UserDto();
-        user.setUserName("testUser01");
+        user.setUserIdentifier("testUser01");
         user.setFirstName("Gerardo");
         user.setLastName("Cepeda");
         user.setEmail("test@test.com");
         bookingService.createUser(user);
 
-        UserDto userSaved = bookingService.getUserByUserName(user.getUserName());
+        UserDto userSaved = bookingService.getUserByUserName(user.getUserIdentifier());
 
         assertNotNull(userSaved);
-        assertEquals("testUser01", userSaved.getUserName());
+        assertEquals("testUser01", userSaved.getUserIdentifier());
 
     }
 
@@ -246,7 +246,7 @@ class BookingServiceIntegrationTests {
     @Test
     void testGetUserByEmail() {
         UserDto user = new UserDto();
-        user.setUserName("testUser02");
+        user.setUserIdentifier("testUser02");
         user.setFirstName("Gerardo");
         user.setLastName("Cepeda");
         user.setEmail("test@test.com");
@@ -262,7 +262,7 @@ class BookingServiceIntegrationTests {
     @Test
     void testGetUserById() {
         UserDto user = new UserDto();
-        user.setUserName("testUser03");
+        user.setUserIdentifier("testUser03");
         user.setFirstName("Gerardo");
         user.setLastName("Cepeda");
         user.setEmail("test@test.com");
@@ -280,7 +280,7 @@ class BookingServiceIntegrationTests {
     @Test
     void testUpdateUser() {
         UserDto user = new UserDto();
-        user.setUserName("testUser04");
+        user.setUserIdentifier("testUser04");
         user.setFirstName("Gerardo");
         user.setLastName("Cepeda");
         user.setEmail("test@test.com");
@@ -301,7 +301,7 @@ class BookingServiceIntegrationTests {
     void testUpdateUserNotValidId() {
         UserDto user = new UserDto();
         user.setId(9999L);
-        user.setUserName("testUser04");
+        user.setUserIdentifier("testUser04");
         user.setFirstName("Gerardo");
         user.setLastName("Cepeda");
         user.setEmail("test@test.com");
@@ -312,7 +312,7 @@ class BookingServiceIntegrationTests {
     @Test
     void testDeleteUser() {
         UserDto user = new UserDto();
-        user.setUserName("testUser05");
+        user.setUserIdentifier("testUser05");
         user.setFirstName("Gerardo");
         user.setLastName("Cepeda");
         user.setEmail("test@test.com");
